@@ -6,38 +6,51 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                echo "Building of node app is starting..."
+                build()
             }
         }
         stage('deploy-dev') {
             steps {
-                echo "Deployment of node app on DEV environment is starting..."
+                deploy("DEV")
             }
         }
         stage('test-dev') {
             steps {
-                echo "API test execution agains node app on DEV environment is starting..."
+                test("DEV")
             }
         }
         stage('deploy-stg') {
             steps {
-                echo "Deployment of node app on STG environment is starting..."
+                deploy("STG")
             }
         }
         stage('test-stg') {
             steps {
-                echo "API test execution agains node app on STG environment is starting..."
+                test("STG")
             }
         }
         stage('deploy-prd') {
             steps {
-                echo "Deployment of node app on PRD environment is starting..."
+                deploy("PRD")
             }
         }
         stage('test-prd') {
             steps {
-                echo "API test execution agains node app on PRD environment is starting..."
+                test("PRD")
             }
         }
     }
+    
+}
+
+def build(){
+    echo "Building of node app is starting..."
+}
+
+def deploy(String environment){
+    echo "Deployment of node app on ${environment} environment is starting..."
+}
+
+def test(String environment){
+    echo "API test execution agains node app on ${environment} environment is starting..."
 }
