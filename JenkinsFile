@@ -4,9 +4,39 @@ pipeline {
         string(name: 'NAME', defaultValue: 'World', description: 'Who to say hello to?')
     }
     stages {
-        stage('Hello') {
+        stage('build') {
             steps {
-                echo "Hello ${params.NAME}!"
+                echo "Building of node app is starting..."
+            }
+        }
+        stage('deploy-dev') {
+            steps {
+                echo "Deployment of node app on DEV environment is starting..."
+            }
+        }
+        stage('test-dev') {
+            steps {
+                echo "API test execution agains node app on DEV environment is starting..."
+            }
+        }
+        stage('deploy-stg') {
+            steps {
+                echo "Deployment of node app on STG environment is starting..."
+            }
+        }
+        stage('test-stg') {
+            steps {
+                echo "API test execution agains node app on STG environment is starting..."
+            }
+        }
+        stage('deploy-prd') {
+            steps {
+                echo "Deployment of node app on PRD environment is starting..."
+            }
+        }
+        stage('test-prd') {
+            steps {
+                echo "API test execution agains node app on PRD environment is starting..."
             }
         }
     }
