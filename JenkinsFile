@@ -6,7 +6,9 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                build()
+                script{
+                    build()
+                }
             }
         }
         stage('deploy-dev') {
