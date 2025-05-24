@@ -1,13 +1,13 @@
 pipeline {
     agent any
-    parameters{
-        string(name: 'NAME', defaultValue: 'World', description: 'Who to say hello to?')
+    triggers{
+        pollSCM('*/1 * * * *')
     }
     stages {
         stage('build') {
             steps {
                 script{
-                    build()
+                    buildApp()
                 }
             }
         }
@@ -45,14 +45,29 @@ pipeline {
     
 }
 
-def build(){
+def buildApp(){
     echo "Building of node app is starting..."
+    sh "docker build -t tsnetkovs/sample-book-app ."
+
+    echo "Pushing image to docker registry.."
+    sh "docker push tsnetkovs/sample-book-app"
 }
 
 def deploy(String environment){
     echo "Deployment of node app on ${environment} environment is starting..."
+    sh "docker pull tsnetkovs/sample-book-app"
+    // String lowercaseEnv = environment.toLowerCase()
+    sh "docker compose stop sample-book-app-${environment.toLowerCase()}"
+    sh "docker compose rm sample-book-app-${environment.toLowerCase()}"
+    sh "docker compose up -d sample-book-app-${environment.toLowerCase()}"
 }
 
 def test(String environment){
     echo "API test execution agains node app on ${environment} environment is starting..."
+    sh "docker pull tsnetkovs/api-tests"
+    def directory = pwd()
+    sh "echo '${directory}'"
+    sh "docker run --rm --network=sample-book-app-network-compose -v '${directory}':/api-tests/mochawesome-report/ tsnetkovs/api-tests run BOOKS BOOKS_${environment}"
+    sh "ls"
+    archiveArtifacts allowEmptyArchive: true, artifacts: 'mochawesome.json', followSymlinks: false
 }
